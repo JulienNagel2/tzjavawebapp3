@@ -1,7 +1,9 @@
-SOURCE_IMAGE = os.getenv("SOURCE_IMAGE", default='jngharbor.allintanzu.com/tap1.3.2/jngsupplychain/tanzu-java-web-app-source')
-LOCAL_PATH = os.getenv("LOCAL_PATH", default='.')
-NAMESPACE = os.getenv("NAMESPACE", default='default')
+allow_k8s_contexts('jngtkc1')
+SOURCE_IMAGE = os.getenv("SOURCE_IMAGE", default='jngharbor.allintanzu.com/tap1.3.2/vscodeapps/tanzu-java-web-app')
+LOCAL_PATH = os.getenv("LOCAL_PATH", default='/Users/jnagel/jng/app/ztestsjng/tests_TAP/w3/tanzu-java-web-app')
+NAMESPACE = os.getenv("NAMESPACE", default='jngnsdev2')
 OUTPUT_TO_NULL_COMMAND = os.getenv("OUTPUT_TO_NULL_COMMAND", default=' > /dev/null ')
+CERTFILE = "/Users/jnagel/jng/app/ztestsjng/tests_TAP/harbor/ca.crt"
 
 k8s_custom_deploy(
     'tanzu-java-web-app',
@@ -10,7 +12,8 @@ k8s_custom_deploy(
                " --source-image " + SOURCE_IMAGE +
                " --namespace " + NAMESPACE +
                " --yes " +
-               OUTPUT_TO_NULL_COMMAND +
+               " --registry-ca-cert " + CERTFILE +  
+               OUTPUT_TO_NULL_COMMAND + 
                " && kubectl get workload tanzu-java-web-app --namespace " + NAMESPACE + " -o yaml",
     delete_cmd="tanzu apps workload delete -f config/workload.yaml --namespace " + NAMESPACE + " --yes",
     deps=['pom.xml', './target/classes'],
